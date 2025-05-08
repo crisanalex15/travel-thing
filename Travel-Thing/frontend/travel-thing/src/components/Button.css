@@ -1,0 +1,15 @@
+.tt-btn {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 0.7em 2.5em;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1em;
+  transition: background 0.2s;
+}
+.tt-btn:hover {
+  background: #388e3c;
+}

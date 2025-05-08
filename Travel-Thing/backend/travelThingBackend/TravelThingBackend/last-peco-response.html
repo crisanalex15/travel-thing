@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ro">
+
+<head>
+        <meta charset="utf-8">
+    <title>Pret benzina, motorina si GPL: Gazprom, Lukoil, Mol, OMV, Petrom, Rompetrol, Socar, ALD, BLKOil, CellyRo, DHR, DriveGas, MaximCoLtd, Metropoli, Ozana, Petrolium, Petromar, RST, TEAutohof, VhExtraOil</title>
+    <meta name="description"
+        content="Gaseste cel mai mic pret la motorina, benzina, GPL sau AdBlue din localitatea sau judetul tau. Preturile din peste 1200 de statii OMV, Petrom, Rompetrol si Socar sunt actualizate zilnic. Vezi lista tuturor statiilor Lukoil, Mol, OMV, Petrom, Rompetrol si a altor retele de benzinarii sau statiile GPL">
+    <meta name="keywords" content="Bucuresti, Cluj Napoca, Timisoara, Iasi, Constanta">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="apple-itunes-app" content="app-id=1279402053">
+    <meta name="google-play-app" content="app-id=ro.peco.online">
+    <link rel="alternate" hreflang="ro" href="https://www.peco-online.ro/index.php" />
+    <link rel="alternate" hreflang="en" href="https://www.peco-online.ro/index_en.php" />
+    <link rel="alternate" hreflang="hu-RO" href="https://www.peco-online.ro/index_hu.php" />
+    <link rel="alternate" hreflang="x-default" href="https://www.peco-online.ro/index_en.php" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="imagini/app_icon.png">
+    <meta property="og:image" content="https://www.peco-online.ro/imagini/pompa.png" />
+    <meta name="twitter:image:src" content="https://www.peco-online.ro/imagini/pompa.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="xx/css/jquery.funnyText.css" />
+    <link rel="stylesheet" type="text/css" href="xx/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" type="text/css" href="xx/css/main.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8552136040289550"
+        crossorigin="anonymous"></script>
+    <script>
+    function addStyleString(str) {
+        var node = document.createElement('style');
+        node.innerHTML = str;
+        document.body.appendChild(node);
+    }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center funnyText mb-0"><strong>PECO ONLINE</strong></h1>
+        <div class="card mb-3">
+            <div class="card-body p-0">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8552136040289550"
+                    data-ad-slot="1395193958" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6 pr-2 padright">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" name="display" class="inaltimeFormular" action="index.php">
+                            <div class="form-group">
+                                <label for="carburant">Tip carburant</label>
+                                <select class="form-control" name="carburant" id="carburant">
+                                    <option value="Benzina_Regular">Benzina Standard</option>
+                                    <option value="Motorina_Regular">Motorina Standard</option>
+                                    <option value="GPL">GPL</option>
+                                    <option value="Benzina_Premium">Benzina Superioara</option>
+                                    <option value="Motorina_Premium">Motorina Superioara</option>
+                                    <option value="AdBlue">AdBlue</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="nume_locatie" style="display: block; margin-bottom: 0;">Nume locatie</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="locatie" value="Oras" id="Oras"
+                                        checked />
+                                    <label class="form-check-label" for="Oras">Localitate</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="locatie" value="Judet"
+                                        id="Judet" />
+                                    <label class="form-check-label" for="Judet">Judet</label>
+                                </div>
+                                <input type="text" class="form-control" name="nume_locatie" id="nume_locatie"
+                                    placeholder="Introduceti locatia" title="Nume locatie" />
+                            </div>
+                            <div class="form-group">
+                                <label for="Retea">Retele benzinarii preferate</label>
+                                <select class="form-control" name="retea[]" id="Retea" multiple="multiple">
+                                    <option value="Gazprom" selected="selected">Gazprom</option><option value="Lukoil" selected="selected">Lukoil</option><option value="Mol" selected="selected">Mol</option><option value="OMV" selected="selected">OMV</option><option value="Petrom" selected="selected">Petrom</option><option value="Rompetrol" selected="selected">Rompetrol</option><option value="Socar" selected="selected">Socar</option><option value="ALD" selected="selected">ALD</option><option value="BLKOil" selected="selected">BLKOil</option><option value="CellyRo" selected="selected">CellyRo</option><option value="DHR" selected="selected">DHR</option><option value="DriveGas" selected="selected">DriveGas</option><option value="MaximCoLtd" selected="selected">MaximCoLtd</option><option value="Metropoli" selected="selected">Metropoli</option><option value="Ozana" selected="selected">Ozana</option><option value="Petrolium" selected="selected">Petrolium</option><option value="Petromar" selected="selected">Petromar</option><option value="RST" selected="selected">RST</option><option value="TEAutohof" selected="selected">TEAutohof</option><option value="VhExtraOil" selected="selected">VhExtraOil</option>                                    <optgroup label="Fara pret">
+                                        <option value="AS24">AS24</option><option value="Carbogaz">Carbogaz</option><option value="Ecombustibil">Ecombustibil</option><option value="Eldomir">Eldomir</option><option value="ETU">ETU</option><option value="Eurogenetic">Eurogenetic</option><option value="Flaga">Flaga</option><option value="FloreaOil">FloreaOil</option><option value="MOil">MOil</option><option value="Octano">Octano</option><option value="OscarDrive">OscarDrive</option><option value="PartenerRompetrol">PartenerRompetrol</option><option value="PetrolEuroTehnic">PetrolEuroTehnic</option><option value="RBCGas">RBCGas</option><option value="RO">RO</option><option value="RompetrolExpres">RompetrolExpres</option><option value="RompetrolGas">RompetrolGas</option><option value="TSV">TSV</option>                                    </optgroup>
+                                </select>
+                            </div>
+                            <button type="submit" name="Submit" class="btn btn-primary btn-block"
+                                onclick="eventAnalytics()">Cauta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pl-2 padleft">
+                <div class="card">
+                    <div class="card-body text-center rectangle">
+                        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
+                            data-ad-client="ca-pub-8552136040289550" data-ad-slot="3241998758"></ins>
+                        <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3" id="cardRezultate">
+            <div class="card-body p-0">
+                <div id="rezultate">
+                    <table class="table table-sm table-hover table-bordered mb-0" id="tabelaRezultate"
+                        style="border: 0;">
+                        <tbody>
+                        <tr style="border: 2px red solid;" onclick="window.open('http://ing.ro/lp/mgm-recomandare?code=danielb55805h', '_blank');">                           
+                                <td class="lead text-center align-middle">
+                                    <span class="pret font-weight-bold">300</span>
+                                </td>
+                                <td>
+                                    <img class="float-left mt-1 mr-1" src="imagini/ing_icon.jpg" alt="ING" title="ING">
+                                    <span class="d-block" style="line-height: 1;">300 RON cadou in cont</span>
+                                    <span class="small text-muted">Fa-ti cont ING si primesti 300 lei cadou la inscriere</span>
+                                </td>
+                            </tr>
+                            <tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>Municipiul Arad, km. 6, 315500</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>P-ta Caius Iacob nr. 1A, 310137</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Chisineu Cris, Arad</span><span>Str. Infratirii, 315100</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Varsand, Arad</span><span>sat Varsand, 317256</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>Sos. Campurilor nr. 2A, 310163</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>P-ta. Carpati nr. 1, 310208</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Nadlac, Arad</span><span>Calea Aradului nr. FN, 315500</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Julita, Arad</span><span>sat Julita, 317382</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Lipova, Arad</span><span>P-ta N. Iorga nr. 1, 315400</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Sebis, Arad</span><span>Calea Aradului, 315700</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Ineu, Arad</span><span>Calea Republicii 64, 315300</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>DN Km. 7, 315500</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>str. Iuliu Maniu nr. 286, 310318</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.03</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Arad, Arad</span><span>str. Musetel 45, 310429</span></td></tr>
+<tr><td class="lead text-center align-middle" style="border-left: 0;"><span class="pret font-weight-bold">7.05</span></td><td style="border-right: 0;"><img class="float-left mt-1 mr-1" src="imagini/Petrom.svg" alt="Petrom" title="Petrom"> <span class="small d-block text-muted" style="line-height: 1;">Pancota, Arad</span><span>Str. T. Vladimirescu, 315600</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body text-center p-0">
+                <ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article"
+                    data-ad-format="fluid" data-ad-client="ca-pub-8552136040289550" data-ad-slot="1720699373"></ins>
+                <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6 pr-2 padright">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="map" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pl-2 padleft">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="fb-root"></div>
+                        <script async defer crossorigin="anonymous"
+                            src="https://connect.facebook.net/ro_RO/sdk.js#xfbml=1&version=v13.0&appId=236060489757155&autoLogAppEvents=1"
+                            nonce="vh3lTg0R"></script>
+                        <div class="fb-page" data-href="https://www.facebook.com/PecoOnline/" data-tabs="timeline"
+                            data-width="500" data-height="400" data-small-header="true"
+                            data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false">
+                            <blockquote cite="https://www.facebook.com/PecoOnline/" class="fb-xfbml-parse-ignore"><a
+                                    href="https://www.facebook.com/PecoOnline/">Peco Online - Preturi benzina, motorina
+                                    , GPL si AdBlue</a></blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text mb-0">Preturile din fiecare statie peco din retelele
+                    Gazprom, Lukoil, Mol, OMV, Petrom, Rompetrol, Socar, ALD, BLKOil, CellyRo, DHR, DriveGas, MaximCoLtd, Metropoli, Ozana, Petrolium, Petromar, RST, TEAutohof, VhExtraOil sunt actualizate la diferite momente din
+                    zi, in fiecare zi; pentru benzinariile AS24, Carbogaz, Ecombustibil, Eldomir, ETU, Eurogenetic, Flaga, FloreaOil, MOil, Octano, OscarDrive, PartenerRompetrol, PetrolEuroTehnic, RBCGas, RO, RompetrolExpres, RompetrolGas, TSV                    nu exista momentan posibilitatea de a obtine aceste preturi actualizate zilnic.</p>
+                <p class="card-text">Preturile returnate de catre aplicatie pot cateodata diferi de cele afisate la
+                    pompa din cauza intarzierii cu care aceste preturi sunt procesate si actualizate de catre serverul
+                    principal.</p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text mb-0">Peco Online este site-ul prin care poti verifica rapid pretul actualizat al
+                    benzinei, motorinei sau GPL-ului din fiecare statie
+                    Gazprom, Lukoil, Mol, OMV, Petrom, Rompetrol, Socar, ALD, BLKOil, CellyRo, DHR, DriveGas, MaximCoLtd, Metropoli, Ozana, Petrolium, Petromar, RST, TEAutohof, VhExtraOil din Romania. De asemenea, poti cauta cel
+                    mai bun pret din jurul tau, din oricare localitate din tara sau de pe orice ruta/traseu.</p>
+                <p class="card-text mb-0">Gaseste locatia tuturor statiilor
+                    Gazprom, Lukoil, Mol, OMV, Petrom, Rompetrol, Socar, ALD, BLKOil, CellyRo, DHR, DriveGas, MaximCoLtd, Metropoli, Ozana, Petrolium, Petromar, RST, TEAutohof, VhExtraOil,
+                    AS24, Carbogaz, Ecombustibil, Eldomir, ETU, Eurogenetic, Flaga, FloreaOil, MOil, Octano, OscarDrive, PartenerRompetrol, PetrolEuroTehnic, RBCGas, RO, RompetrolExpres, RompetrolGas, TSV si obtine indicatii de navigare catre
+                    statia selectata.</p>
+                <p class="card-text mb-0">&nbsp; &bull; Evolutia pretului la benzina si motorina in ultimele luni</p>
+                <p class="card-text mb-0">&nbsp; &bull; Lista actualizata zilnic cu cele mai mici preturi la benzina,
+                    motorina si GPL din principalele orase din tara</p>
+                <p class="card-text">&nbsp; &bull; Promotiile curente din benzinarii</p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text mb-0 text-muted">*preturile sunt actualizate zilnic pentru fiecare statie din
+                    retelele Gazprom, Lukoil, Mol, OMV, Petrom, Rompetrol, Socar, ALD, BLKOil, CellyRo, DHR, DriveGas, MaximCoLtd, Metropoli, Ozana, Petrolium, Petromar, RST, TEAutohof, VhExtraOil</p>
+                <p class="card-text mb-0 text-center"><a href="https://www.peco-online.ro/index_en.php">EN</a> | <a
+                        href="https://www.benzinkutarak.hu/index.php">Benzinkút árak</a> | <a
+                        href="https://www.peco.md/index.php">Peco Moldova</a></p>
+            </div>
+        </div>
+
+
+        <script>
+        var searchString = "Arad";
+        if (searchString) {
+            document.getElementById("nume_locatie").setAttribute("value", searchString);
+        }
+        var searchCarburant = "Motorina_Regular";
+        if (searchCarburant) {
+            document.getElementById("carburant").value = searchCarburant;
+        }
+        var searchTipLocatie = "Judet";
+        if (searchTipLocatie) {
+            document.getElementById(searchTipLocatie).checked = true;
+        }
+        var searchRetea = "Petrom";
+        if (searchRetea) {
+            var selectObj = document.getElementById("Retea");
+            for (var index = 0; index < selectObj.length; index++) {
+                selectObj.options[index].selected = false;
+            }
+            var reteleSelectate = searchRetea.split("','");
+            for (var i = 0; i < reteleSelectate.length; i++) {
+                var numeReteaSelectataAnterior = reteleSelectate[i];
+                for (var j = 0; j < selectObj.length; j++) {
+                    if (selectObj.options[j].value.toUpperCase() == numeReteaSelectataAnterior.toUpperCase()) {
+                        selectObj.options[j].selected = true;
+                    }
+                }
+            }
+
+        }
+        var markers = [];
+        var bounds = [];
+        var imgExt = '.svg';
+
+        function initMapOpenStreet() {
+            var map = L.map('map', {
+                center: [45.76, 24.78],
+                zoom: 6
+            });
+            //OSM
+            layerOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                minZoom: 5
+            });
+            //Carto
+            layerCarto = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                minZoom: 5
+            });
+            map.addLayer(layerOSM);
+            //map.addLayer(layerCarto);	
+
+            var rezultate = JSON.parse('[["Petrom",46.20433,21.20816,"Arad","Municipiul Arad, km. 6, 315500",7.03],["Petrom",46.18464,21.32592,"Arad","P-ta Caius Iacob nr. 1A, 310137",7.03],["Petrom",46.5081,21.50689,"Chisineu Cris","Str. Infratirii, 315100",7.03],["Petrom",46.60448,21.35123,"Varsand","sat Varsand, 317256",7.03],["Petrom",46.21531,21.29176,"Arad","Sos. Campurilor nr. 2A, 310163",7.03],["Petrom",46.19447,21.33483,"Arad","P-ta. Carpati nr. 1, 310208",7.03],["Petrom",46.16095,20.75946,"Nadlac","Calea Aradului nr. FN, 315500",7.03],["Petrom",46.02409,22.13595,"Julita","sat Julita, 317382",7.03],["Petrom",46.08951,21.69165,"Lipova","P-ta N. Iorga nr. 1, 315400",7.03],["Petrom",46.37193,22.12153,"Sebis","Calea Aradului, 315700",7.03],["Petrom",46.4259,21.8419,"Ineu","Calea Republicii 64, 315300",7.03],["Petrom",46.20572,21.19016,"Arad","DN Km. 7, 315500",7.03],["Petrom",46.17491,21.36756,"Arad","str. Iuliu Maniu nr. 286, 310318",7.03],["Petrom",46.1876,21.30173,"Arad","str. Musetel 45, 310429",7.03],["Petrom",46.32506,21.68848,"Pancota","Str. T. Vladimirescu, 315600",7.05]]');
+            if (rezultate) {
+                for (i = 0; i < rezultate.length; i++) {
+                    var pt = L.latLng(rezultate[i][1], rezultate[i][2]);
+                    var image = 'imagini/' + rezultate[i][0] + imgExt;
+                    var myIcon = L.icon({
+                        iconUrl: image,
+                        popupAnchor: [12, 0],
+                        shadowSize: [68, 95],
+                        shadowAnchor: [22, 94]
+                    });
+                    var marker = L.marker(pt, {
+                        icon: myIcon
+                    }).addTo(map);
+                    bounds[bounds.length] = [rezultate[i][1], rezultate[i][2]];
+                    markers[markers.length] = marker;
+                    var tipCarburant = "Motorina_Regular";
+                    switch (tipCarburant) {
+                        case "Benzina_Regular":
+                            tipCarburantNice = "Benzina";
+                            break;
+                        case "Benzina_Premium":
+                            tipCarburantNice = "Benzina Superioara";
+                            break;
+                        case "Motorina_Regular":
+                            tipCarburantNice = "Motorina";
+                            break;
+                        case "Motorina_Premium":
+                            tipCarburantNice = "Motorina Superioara";
+                            break;
+                        case "GPL":
+                            tipCarburantNice = "GPL";
+                            break;
+                        case "AdBlue":
+                            tipCarburantNice = "AdBlue";
+                            break;
+                    }
+                    var contentString = rezultate[i][0] + '<span class="small text-muted d-block">' + rezultate[i][3] +
+                        '</span><small class="d-block">' + rezultate[i][4] + '</small>' + tipCarburantNice +
+                        ': <strong>' + displayPrice(rezultate[i][5]) + '</strong>';
+                    marker.bindPopup(contentString);
+                    if (i == 0) {
+                        marker.openPopup();
+                    }
+                }
+            }
+            if (markers.length == 1) {
+                map.setZoomAround(markers[markers.length - 1].getLatLng(), 10);
+            } else if (markers.length > 1) {
+                map.fitBounds(bounds);
+            }
+        }
+        initMapOpenStreet();
+
+        function displayPrice(price) {
+            if (price < 999999) {
+                return parseFloat(price).toFixed(2);
+            } else {
+                return "- -";
+            }
+        }
+
+        function addRowHandlers() {
+            var table = document.getElementById("tabelaRezultate");
+            var rows = table.getElementsByTagName("tr");
+            for (i = 1; i < rows.length; i++) {
+                var currentRow = table.rows[i];
+                var createClickHandler =
+                    function(row) {
+                        return function() {
+                            markers[row - 1].openPopup();
+                            document.getElementById("map").scrollIntoView(false);
+                        };
+                    };
+                currentRow.onclick = createClickHandler(i);
+            }
+        }
+        window.onload = addRowHandlers();
+
+        function eventAnalytics() {
+            var tipCarburantEvent = document.getElementById("carburant").value;
+            var locatieEvent = document.getElementById("nume_locatie").value;
+            var reteaEvent = "";
+            var selectReteaObj = document.getElementById("Retea");
+            for (var index = 0; index < selectReteaObj.length; index++) {
+                if (selectReteaObj.options[index].selected) {
+                    reteaEvent = reteaEvent + selectReteaObj.options[index].value + ', ';
+                }
+            }
+            //ga('send', 'event', tipCarburantEvent, locatieEvent, reteaEvent);
+            gtag('event', 'tipCarburant', {
+                'tipCarburantValue': tipCarburantEvent
+            });
+            gtag('event', 'localitate', {
+                'localitateValue': locatieEvent
+            });
+            gtag('event', 'retele', {
+                'reteleSelectateValue': reteaEvent
+            });
+        }
+        </script>
+
+        		<div class="card mb-3">
+			<div class="row row-cols-1 row-cols-md-4">
+				<div class="col mb-3">
+					<div class="card border-0">
+						<div class="card-body text-center" style="padding-bottom: 0;">
+							<a href="#" data-toggle="modal" data-target="#myModal"><img src="imagini/Contact.png" class="img-responsive" alt="Contact" style="margin: 0 auto;"></a>
+							<div id="myModal" class="modal fade text-left" role="dialog" tabindex="-1" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h4 class="modal-title">
+												Contact
+											</h4>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>											
+										</div>
+										<div class="modal-body">
+											<form method="post" id="reused_form">
+												<div class="form-group">
+													<label for="name"> Nume:</label>
+													<input type="text" class="form-control" id="name" name="name" required maxlength="50">
+												</div>
+												<div class="form-group">
+													<label for="email"> Email:</label>
+													<input type="email" class="form-control" id="email" name="email" required maxlength="50">
+												</div>
+												<div class="form-group">
+													<label for="name"> Mesaj:</label>
+													<textarea class="form-control" name="message" id="message" maxlength="1000" rows="6"></textarea>
+												</div>
+												<button type="submit" class="btn btn-lg btn-success btn-block" name="submit" id="btnContactUs">Trimite mesajul</button>
+											</form>																						
+										</div>
+																			</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col mb-3">
+					<div class="card border-0">
+						<div class="card-body text-center" style="padding-bottom: 0;">
+							<a href="https://play.google.com/store/apps/details?id=ro.peco.online"><img src="imagini/PlayStore.png" alt="aplicatie Android" class="img-responsive"></a>
+						</div>
+					</div>
+				</div>
+				<div class="col mb-3">
+					<div class="card border-0">
+						<div class="card-body text-center" style="padding-bottom: 0;">
+							<a href="https://appgallery1.huawei.com/#/app/C101170967"><img src="imagini/AppGallery.png" alt="aplicatie Huawei" class="img-responsive"></a>
+						</div>
+					</div>
+				</div>
+				<div class="col mb-3">
+					<div class="card border-0">
+						<div class="card-body text-center" style="padding-bottom: 0;">
+							<a href="https://itunes.apple.com/app/id1279402053?mt=8"><img src="imagini/AppStore.png" alt="aplicatie iOS" class="img-responsive"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>    </div>
+    <nav class="nav fixed-bottom navbar-light bg-light">
+        <a class="nav-link text-center element-navigation element-navigation-active" href="index.php">
+            <i class="material-icons">location_city</i>
+            <span class="text-element-navigation">Benzinarii</span>
+        </a>
+        <a class="nav-link text-center element-navigation" href="raza.php">
+            <i class="material-icons">near_me</i>
+            <span class="text-element-navigation">In jur</span>
+        </a>
+        <a class="nav-link text-center element-navigation" href="ruta.php">
+            <i class="material-icons">alt_route</i>
+            <span class="text-element-navigation">Pe ruta</span>
+        </a>
+        <a class="nav-link text-center element-navigation" href="minime.php">
+            <i class="material-icons">trending_down</i>
+            <span class="text-element-navigation">Minime</span>
+        </a>
+        <a class="nav-link text-center element-navigation" href="istoric.php">
+            <i class="material-icons">insights</i>
+            <span class="text-element-navigation">Istoric</span>
+        </a>
+        <a class="nav-link text-center element-navigation" href="promotii.php">
+            <i class="material-icons">loyalty</i>
+            <span class="text-element-navigation">Utile</span>
+        </a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous">
+    </script>
+    <script src="xx/js/bootstrap-multiselect.js"></script>
+    <script src="xx/js/jquery.funnyText.min.js"></script>
+    <script src="xx/js/main.js"></script>
+    <script>
+    $('#Retea').multiselect({
+        enableCollapsibleOptGroups: true,
+        maxHeight: 200,
+        nonSelectedText: '0 selectate',
+        numberDisplayed: 1,
+        nSelectedText: ' selectate',
+        includeSelectAllOption: true,
+        selectAllText: 'Toate',
+        allSelectedText: false
+    });
+    </script>
+    		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-767Z3Z98TZ"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-767Z3Z98TZ');
+		</script></body>
+
+</html>

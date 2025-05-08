@@ -1,0 +1,67 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  width: 100%;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 32px 24px 24px 24px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+.tt-title {
+  color: #4caf50;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.2em;
+}
+.tt-subtitle {
+  color: #222;
+  font-size: 1.1rem;
+  margin-bottom: 2em;
+}
+.tt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  width: 100%;
+}
+.tt-form > .tt-input:first-child {
+  max-width: 100%;
+}
+.tt-row {
+  display: flex;
+  gap: 1em;
+}
+.tt-form-group {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+.tt-form-group .tt-btn {
+  margin-top: 0;
+}
+.tt-form-group .tt-input {
+  margin-bottom: 0;
+  width: auto;
+  opacity: 1;
+  padding-left: 1em;
+  padding-right: 1em;
+}

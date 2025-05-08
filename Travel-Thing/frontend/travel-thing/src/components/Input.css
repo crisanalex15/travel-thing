@@ -1,0 +1,13 @@
+.tt-input {
+  width: 100%;
+  padding: 0.8em 1em;
+  border-radius: 5px;
+  border: none;
+  background: #181818;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 0.2em;
+}
+.tt-input::placeholder {
+  color: #aaa;
+}
