@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using TravelThingBackend.Areas.Identity.Data;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore;
+using TravelThingBackend.Controllers;
+using TravelThingBackend.Data;
+using TravelThingBackend.Services;
 
 namespace TravelThingBackend
 {
@@ -25,6 +28,10 @@ namespace TravelThingBackend
             });
 
             builder.Services.AddDbContext<AuthDbContext>(options => options.UseSqlite(connectionString));
+            
+            // Adăugăm contextul pentru prețurile carburantului
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(connectionString));
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -52,6 +59,13 @@ namespace TravelThingBackend
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TravelThingBackend API", Version = "v1" });
             });
+
+            // Add HttpClient
+            builder.Services.AddHttpClient<RouteCalculatorController>();
+            builder.Services.AddHttpClient<FuelPriceService>();
+
+            // Adăugăm serviciul pentru prețurile carburantului
+            builder.Services.AddScoped<FuelPriceService>();
 
             var app = builder.Build();
 

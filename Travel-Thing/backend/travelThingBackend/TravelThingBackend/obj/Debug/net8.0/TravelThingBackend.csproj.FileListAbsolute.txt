@@ -299,3 +299,4 @@ C:\Users\crisa\travel-thing.v2\Travel-Thing\backend\travelThingBackend\TravelThi
 C:\Users\crisa\travel-thing.v2\Travel-Thing\backend\travelThingBackend\TravelThingBackend\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\crisa\travel-thing.v2\Travel-Thing\backend\travelThingBackend\TravelThingBackend\bin\Debug\net8.0\runtimes\linux-musl-s390x\native\libe_sqlite3.so
 C:\Users\crisa\travel-thing.v2\Travel-Thing\backend\travelThingBackend\TravelThingBackend\bin\Debug\net8.0\HtmlAgilityPack.dll
+C:\Users\crisa\travel-thing.v2\Travel-Thing\backend\travelThingBackend\TravelThingBackend\obj\Debug\net8.0\TravelThingBackend.sourcelink.json

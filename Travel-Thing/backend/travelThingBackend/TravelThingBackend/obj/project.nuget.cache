@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GfhfnFFc4JY=",
+  "dgSpecHash": "gBjHod6SxFc=",
   "success": true,
   "projectFilePath": "C:\\Users\\crisa\\travel-thing.v2\\Travel-Thing\\backend\\travelThingBackend\\TravelThingBackend\\TravelThingBackend.csproj",
   "expectedPackageFiles": [
@@ -85,7 +85,7 @@
     "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.4\\microsoft.entityframeworkcore.analyzers.9.0.4.nupkg.sha512",
     "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.design\\9.0.4\\microsoft.entityframeworkcore.design.9.0.4.nupkg.sha512",
     "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\9.0.4\\microsoft.entityframeworkcore.relational.9.0.4.nupkg.sha512",
-    "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite\\8.0.11\\microsoft.entityframeworkcore.sqlite.8.0.11.nupkg.sha512",
+    "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite\\9.0.4\\microsoft.entityframeworkcore.sqlite.9.0.4.nupkg.sha512",
     "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite.core\\9.0.4\\microsoft.entityframeworkcore.sqlite.core.9.0.4.nupkg.sha512",
     "C:\\Users\\crisa\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\9.0.4\\microsoft.entityframeworkcore.tools.9.0.4.nupkg.sha512",
     "C:\\Users\\crisa\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
