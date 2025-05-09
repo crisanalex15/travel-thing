@@ -25,6 +25,25 @@ namespace TravelThingBackend.Services
 
         public async Task UpdateFuelPricesAsync()
         {
+            _logger.LogInformation("Începe actualizarea prețurilor combustibilului");
+
+            // Verifică dacă s-a făcut deja o actualizare astăzi
+            var lastUpdate = await _context.FuelPrices
+                .OrderByDescending(p => p.LastUpdated)
+                .Select(p => p.LastUpdated)
+                .FirstOrDefaultAsync();
+
+            if (lastUpdate != null && lastUpdate.Date == DateTime.UtcNow.Date)
+            {
+                _logger.LogInformation("Prețurile au fost deja actualizate astăzi");
+                return;
+            }
+
+            // Șterge toate prețurile vechi
+            _context.FuelPrices.RemoveRange(_context.FuelPrices);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Prețurile vechi au fost șterse");
+
             var cities = City.AllCities;
             var fuelTypes = new[] { "Benzina_Regular", "Motorina_Regular", "GPL", "Benzina_Premium", "Motorina_Premium" };
 
@@ -32,15 +51,17 @@ namespace TravelThingBackend.Services
             {
                 try
                 {
+                    _logger.LogInformation("Încep procesarea pentru orașul {City}", city);
                     var client = _httpClientFactory.CreateClient();
                     var url = "https://www.peco-online.ro/index.php";
 
                     foreach (var fuelType in fuelTypes)
                     {
+                        _logger.LogInformation("Procesez {FuelType} pentru {City}", fuelType, city);
                         var formData = new Dictionary<string, string>
                         {
                             { "carburant", fuelType },
-                            { "locatie", "Oras" },
+                            { "locatie", "Judet" },
                             { "nume_locatie", city },
                             { "Submit", "Cauta" },
                             { "retea[]", "Petrom" }
@@ -52,6 +73,8 @@ namespace TravelThingBackend.Services
 
                         // Parse HTML response to get price
                         var price = ParsePriceFromHtml(html);
+                        _logger.LogInformation("Preț găsit pentru {City} - {FuelType}: {Price}", city, fuelType, price);
+                        
                         if (price > 0)
                         {
                             var fuelPrice = new FuelPrice
@@ -94,19 +117,37 @@ namespace TravelThingBackend.Services
             var rows = doc.DocumentNode.SelectNodes("//table//tr");
             if (rows != null)
             {
+                _logger.LogInformation("Am găsit {Count} rânduri în tabel", rows.Count);
                 foreach (var row in rows)
                 {
                     var cells = row.SelectNodes("td");
                     if (cells != null && cells.Count >= 2)
                     {
                         var priceText = cells[0].InnerText.Trim();
+                        _logger.LogInformation("Text preț găsit: {PriceText}", priceText);
                         if (decimal.TryParse(priceText.Replace(",", "."), out var price))
                         {
-                            if ((price > 5 && price < 15) || (price > 2 && price < 5 && priceText.Contains("GPL")))
+                            _logger.LogInformation("Preț parsat: {Price}", price);
+                            if ((price > 3 && price < 15) || (price > 1 && price < 8 && priceText.Contains("GPL")))
+                            {
+                                _logger.LogInformation("Preț valid găsit: {Price}", price);
                                 return price;
+                            }
+                            else
+                            {
+                                _logger.LogInformation("Preț în afara intervalului valid: {Price}", price);
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Nu s-a putut parsa prețul din text: {PriceText}", priceText);
                         }
                     }
                 }
+            }
+            else
+            {
+                _logger.LogWarning("Nu s-au găsit rânduri în tabel");
             }
             return 0;
         }

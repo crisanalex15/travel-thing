@@ -181,3 +181,10 @@ body {
   font-size: 1.5em;
   margin-bottom: 0.5em;
 }
+
+.error {
+  color: #e53e3e;
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+}

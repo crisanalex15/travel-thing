@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import "./Home.css";
+import { fuelPriceService } from "../services/fuelPriceService";
+import AverageFuelPrices from "../components/AverageFuelPrices";
 
 export default function Home() {
   const [startLocation, setStartLocation] = useState("");
@@ -12,9 +14,10 @@ export default function Home() {
   const [fuelType, setFuelType] = useState("Motorina Standard");
   const [routePreference, setRoutePreference] = useState("recommended");
   const [routeResult, setRouteResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [averagePrices, setAveragePrices] = useState({});
+  const [fuelPrices, setFuelPrices] = useState({});
 
   const fuelTypes = [
     "Motorina Premium",
@@ -31,32 +34,24 @@ export default function Home() {
     { value: "recommended", label: "Combinat", icon: "🔄" },
   ];
 
-  const fuelPrices = {
-    "Motorina Premium": 7.39,
-    "Motorina Standard": 6.98,
-    "Benzina Standard": 6.86,
-    "Benzina Superioara": 7.42,
-    GPL: 3.63,
-    Electric: 0.5,
-  };
-
   useEffect(() => {
-    const fetchAveragePrices = async () => {
+    const fetchPrices = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/fuelprice/average"
+        console.log("Se încearcă obținerea prețurilor...");
+        const prices = await fuelPriceService.getAveragePrices();
+        console.log("Prețuri obținute:", prices);
+        setFuelPrices(prices);
+        setLoading(false);
+      } catch (err) {
+        console.error("Eroare detaliată:", err);
+        setError(
+          "Eroare la încărcarea prețurilor. Vă rugăm să încercați din nou."
         );
-        if (!response.ok) {
-          throw new Error("Nu s-au putut obține prețurile medii");
-        }
-        const data = await response.json();
-        setAveragePrices(data);
-      } catch (error) {
-        console.error("Eroare la obținerea prețurilor medii:", error);
+        setLoading(false);
       }
     };
 
-    fetchAveragePrices();
+    fetchPrices();
   }, []);
 
   const calculateFuelConsumption = () => {
@@ -198,6 +193,9 @@ export default function Home() {
     }
   };
 
+  if (loading) return <div>Se încarcă...</div>;
+  if (error) return <div className="error">{error}</div>;
+
   return (
     <div className="home-container">
       <h1 className="tt-title">Travel Thing</h1>
@@ -300,16 +298,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      <div className="tt-average-prices">
-        <h3>Prețuri medii:</h3>
-        {Object.entries(averagePrices).map(([fuelType, price]) => (
-          <div key={fuelType} className="tt-price-item">
-            <span className="tt-price-label">{fuelType}:</span>
-            <span className="tt-price-value">{price.toFixed(2)} RON/L</span>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

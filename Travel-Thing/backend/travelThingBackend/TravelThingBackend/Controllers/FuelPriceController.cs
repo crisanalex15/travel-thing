@@ -67,16 +67,38 @@ namespace TravelThingBackend.Controllers
         [HttpGet("average")]
         public async Task<ActionResult<Dictionary<string, decimal>>> GetAveragePrices()
         {
-            var averages = await _context.FuelPrices
+            _logger.LogInformation("Se solicită prețurile medii");
+            
+            var prices = await _context.FuelPrices
                 .GroupBy(p => p.FuelType)
                 .Select(g => new
                 {
                     FuelType = g.Key,
-                    AveragePrice = g.Average(p => p.Price)
+                    AveragePrice = Math.Round(g.Average(p => p.Price), 2),
+                    Count = g.Count()
                 })
                 .ToDictionaryAsync(x => x.FuelType, x => x.AveragePrice);
 
-            return averages;
+            _logger.LogInformation("Prețuri medii găsite: {Prices}", 
+                string.Join(", ", prices.Select(p => $"{p.Key}: {p.Value}")));
+
+            return prices;
+        }
+
+        [HttpGet("last-update")]
+        public async Task<ActionResult<DateTime>> GetLastUpdate()
+        {
+            var lastUpdate = await _context.FuelPrices
+                .OrderByDescending(p => p.LastUpdated)
+                .Select(p => p.LastUpdated)
+                .FirstOrDefaultAsync();
+
+            if (lastUpdate == null)
+            {
+                return NotFound("Nu există prețuri în baza de date");
+            }
+
+            return lastUpdate;
         }
     }
 } 
