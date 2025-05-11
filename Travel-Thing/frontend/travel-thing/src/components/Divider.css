@@ -1,0 +1,14 @@
+.divider-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.divider-line {
+  width: 90%;
+  height: 2px;
+  background-color: #000000;
+  opacity: 0.2;
+}

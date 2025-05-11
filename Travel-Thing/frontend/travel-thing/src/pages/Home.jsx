@@ -4,6 +4,8 @@ import Input from "../components/Input";
 import "./Home.css";
 import { fuelPriceService } from "../services/fuelPriceService";
 import AverageFuelPrices from "../components/AverageFuelPrices";
+import TravelMap from "../components/map/map";
+import Divider from "../components/Divider";
 
 export default function Home() {
   const [startLocation, setStartLocation] = useState("");
@@ -18,6 +20,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [averagePrices, setAveragePrices] = useState({});
   const [fuelPrices, setFuelPrices] = useState({});
+  const [isRoundTrip, setIsRoundTrip] = useState(false);
 
   const fuelTypes = [
     "Motorina Premium",
@@ -63,7 +66,8 @@ export default function Home() {
       };
     }
 
-    const distanceInKm = routeResult.distance.kilometers;
+    const distanceInKm =
+      routeResult.distance.kilometers * (isRoundTrip ? 2 : 1);
     const consumptionPerKm = parseFloat(consumption) / 100;
     const totalFuelNeeded = distanceInKm * consumptionPerKm;
 
@@ -198,7 +202,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <h1 className="tt-title">Travel Thing</h1>
+      <h1 className="tt-title">Travel Thing (DEMO)</h1>
       <p className="tt-subtitle">
         Calculator de călătorii și atracții turistice
       </p>
@@ -267,7 +271,16 @@ export default function Home() {
               Preț automat pentru {fuelType}: {fuelPrices[fuelType]} RON/L
             </div>
           )}
+          <div className="tt-form-group-checkbox ">
+            <p>Include dus-întors</p>
+            <input
+              type="checkbox"
+              checked={isRoundTrip}
+              onChange={(e) => setIsRoundTrip(e.target.checked)}
+            />
+          </div>
         </div>
+
         <Button type="submit" disabled={loading}>
           {loading ? "Se calculează..." : "Calculează"}
         </Button>
@@ -279,12 +292,15 @@ export default function Home() {
         <div className="tt-result">
           <h3>Rezultate ruta:</h3>
           <div className="tt-result-details">
-            <p>Distanță: {routeResult.distance.kilometers} km</p>
+            <p>
+              Distanță:{" "}
+              {routeResult.distance.kilometers * (isRoundTrip ? 2 : 1)} km
+            </p>
             <p>
               Durată:{" "}
               {formatDuration(
-                routeResult.duration.hours,
-                routeResult.duration.minutes
+                routeResult.duration.hours * (isRoundTrip ? 2 : 1),
+                routeResult.duration.minutes * (isRoundTrip ? 2 : 1)
               )}
             </p>
             {consumptionResult.error ? (
@@ -296,6 +312,12 @@ export default function Home() {
               </>
             )}
           </div>
+          <Divider />
+          <TravelMap
+            geometry={routeResult.geometry}
+            startLocation={startLocation}
+            endLocation={endLocation}
+          />
         </div>
       )}
     </div>

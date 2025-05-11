@@ -43,7 +43,6 @@ namespace TravelThingBackend.Controllers
                 var url = "https://api.openrouteservice.org/v2/directions/driving-car";
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", API_KEY);
 
-                // Adăugăm parametrii în funcție de preferință
                 var preference = request.Preference?.ToLower() switch
                 {
                     "fastest" => "fastest",
@@ -81,10 +80,11 @@ namespace TravelThingBackend.Controllers
 
                 var distance = route.summary.distance;
                 var duration = route.summary.duration;
+                var geometry = route.geometry?.ToString();
 
-                if (distance == null || duration == null)
+                if (distance == null || duration == null || string.IsNullOrEmpty(geometry))
                 {
-                    return BadRequest(new { error = "Nu s-au putut obține distanța sau durata" });
+                    return BadRequest(new { error = "Nu s-au putut obține detaliile rutei" });
                 }
 
                 var responseData = new
@@ -99,7 +99,8 @@ namespace TravelThingBackend.Controllers
                         seconds = Math.Round((double)duration),
                         minutes = Math.Round((double)duration / 60),
                         hours = Math.Round((double)duration / 3600, 1)
-                    }
+                    },
+                    geometry = geometry
                 };
 
                 return Ok(responseData);
@@ -151,4 +152,4 @@ namespace TravelThingBackend.Controllers
         public string EndLocation { get; set; }
         public string Preference { get; set; } = "recommended";
     }
-} 
+}

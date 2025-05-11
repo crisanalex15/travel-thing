@@ -1,0 +1,26 @@
+.map-wrapper {
+  height: 100%; /* dacă părintele are înălțime */
+  min-height: 400px; /* sau ceva fix */
+}
+
+.custom-map {
+  height: 400px !important; /* FOARTE important */
+  width: 100%;
+  border: 1px solid #4caf50;
+}
+
+.leaflet-popup-content {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 24px;
+  color: #4caf50;
+}
+
+.end-marker {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 5px 10px;
+}
+
+.custom-marker {
+  filter: hue-rotate(-60deg) brightness(1);
+}
