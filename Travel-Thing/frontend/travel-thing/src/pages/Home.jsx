@@ -94,6 +94,15 @@ export default function Home() {
     };
   };
 
+  const normalizeLocation = (location) => {
+    if (!location) return "";
+    return location
+      .trim()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
   const handleRoutePreferenceChange = async (preference) => {
     setRoutePreference(preference);
     if (startLocation && endLocation) {
@@ -108,8 +117,8 @@ export default function Home() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              startLocation: startLocation,
-              endLocation: endLocation,
+              startLocation: normalizeLocation(startLocation),
+              endLocation: normalizeLocation(endLocation),
               preference: preference,
             }),
           }
@@ -132,7 +141,10 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!startLocation || !endLocation) {
+    const normalizedStart = normalizeLocation(startLocation);
+    const normalizedEnd = normalizeLocation(endLocation);
+
+    if (!normalizedStart || !normalizedEnd) {
       setError("Vă rugăm să introduceți ambele locații");
       return;
     }
@@ -158,8 +170,8 @@ export default function Home() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            startLocation: startLocation,
-            endLocation: endLocation,
+            startLocation: normalizedStart,
+            endLocation: normalizedEnd,
             preference: routePreference,
           }),
         }
@@ -197,15 +209,14 @@ export default function Home() {
     }
   };
 
-  if (loading) return <div>Se încarcă...</div>;
-  if (error) return <div className="error">{error}</div>;
-
   return (
     <div className="home-container">
       <h1 className="tt-title">Travel Thing (DEMO)</h1>
       <p className="tt-subtitle">
         Calculator de călătorii și atracții turistice
       </p>
+      {loading && <div className="tt-loading">Se încarcă prețurile...</div>}
+      {error && <div className="tt-error">{error}</div>}
       <form className="tt-form" onSubmit={handleSubmit}>
         <div className="tt-row">
           <Input
@@ -213,12 +224,14 @@ export default function Home() {
             placeholder="Introdu punctul de plecare..."
             value={startLocation}
             onChange={(e) => setStartLocation(e.target.value)}
+            onBlur={(e) => setStartLocation(normalizeLocation(e.target.value))}
           />
           <Input
             type="text"
             placeholder="Introdu punctul de sosire..."
             value={endLocation}
             onChange={(e) => setEndLocation(e.target.value)}
+            onBlur={(e) => setEndLocation(normalizeLocation(e.target.value))}
           />
         </div>
         <div className="tt-row">
@@ -268,10 +281,11 @@ export default function Home() {
             />
           ) : (
             <div className="tt-auto-price">
-              Preț automat pentru {fuelType}: {fuelPrices[fuelType]} RON/L
+              Preț automat pentru {fuelType}:{" "}
+              {fuelPrices[fuelType] || "Se încarcă..."} RON/L
             </div>
           )}
-          <div className="tt-form-group-checkbox ">
+          <div className="tt-form-group-checkbox">
             <p>Include dus-întors</p>
             <input
               type="checkbox"
@@ -285,8 +299,6 @@ export default function Home() {
           {loading ? "Se calculează..." : "Calculează"}
         </Button>
       </form>
-
-      {error && <div className="tt-error">{error}</div>}
 
       {routeResult && (
         <div className="tt-result">

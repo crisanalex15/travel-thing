@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TravelThingBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d360a265dde8bfb8e1625b86f9ea0adc780c9aab")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bb9fd04e0c114a2e6180704eded36fedfbad7820")]
 [assembly: System.Reflection.AssemblyProductAttribute("TravelThingBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TravelThingBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

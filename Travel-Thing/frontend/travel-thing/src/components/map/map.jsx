@@ -37,15 +37,15 @@ const calculateZoom = (coordinates) => {
   const maxDiff = Math.max(latDiff, lonDiff);
 
   // Mapăm distanța la un nivel de zoom potrivit
-  if (maxDiff > 15) return 4; // Pentru distanțe intercontinentale
-  if (maxDiff > 10) return 5; // Pentru distanțe între țări mari
-  if (maxDiff > 7) return 6; // Pentru distanțe între țări mici
-  if (maxDiff > 4) return 7; // Pentru distanțe între regiuni mari
-  if (maxDiff > 2) return 8; // Pentru distanțe între regiuni mici
-  if (maxDiff > 1) return 9; // Pentru distanțe între orașe mari
-  if (maxDiff > 0.5) return 10; // Pentru distanțe între orașe mici
-  if (maxDiff > 0.2) return 11; // Pentru distanțe între cartiere
-  if (maxDiff > 0.1) return 12; // Pentru distanțe între străzi
+  if (maxDiff > 15) return 2; // Pentru distanțe intercontinentale
+  if (maxDiff > 10) return 3; // Pentru distanțe între țări mari
+  if (maxDiff > 7) return 4; // Pentru distanțe între țări mici
+  if (maxDiff > 4) return 5; // Pentru distanțe între regiuni mari
+  if (maxDiff > 2) return 6; // Pentru distanțe între regiuni mici
+  if (maxDiff > 1) return 7; // Pentru distanțe între orașe mari
+  if (maxDiff > 0.5) return 8; // Pentru distanțe între orașe mici
+  if (maxDiff > 0.2) return 9; // Pentru distanțe între cartiere
+  if (maxDiff > 0.1) return 10; // Pentru distanțe între străzi
   return 13; // Pentru distanțe foarte mici (în aceeași zonă)
 };
 
