@@ -171,7 +171,7 @@ public class TouristAttractionsController : ControllerBase
         return Ok(results);
     }
 
-        [HttpGet("nearby (without lat and lon)")]
+        [HttpGet("nearbyZone")]
     public async Task<IActionResult> GetNearbyAttractions(
         string location,
         int radius = 10000,

@@ -4,6 +4,7 @@ using TravelThingBackend.Models;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text;
+using HtmlAgilityPack;
 
 namespace TravelThingBackend.Services
 {
@@ -39,13 +40,11 @@ namespace TravelThingBackend.Services
                 return;
             }
 
-            // Șterge toate prețurile vechi
-            _context.FuelPrices.RemoveRange(_context.FuelPrices);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("Prețurile vechi au fost șterse");
-
             var cities = City.AllCities;
             var fuelTypes = new[] { "Benzina_Regular", "Motorina_Regular", "GPL", "Benzina_Premium", "Motorina_Premium" };
+            var newPrices = new List<FuelPrice>();
+            var totalRequests = cities.Length * fuelTypes.Length;
+            var successfulRequests = 0;
 
             foreach (var city in cities)
             {
@@ -53,23 +52,46 @@ namespace TravelThingBackend.Services
                 {
                     _logger.LogInformation("Încep procesarea pentru orașul {City}", city);
                     var client = _httpClientFactory.CreateClient();
+                    
+                    // Adăugăm headere pentru a simula un browser real
+                    client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+                    client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+                    client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.5");
+                    client.DefaultRequestHeaders.Add("Connection", "keep-alive");
+                    client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
+                    
                     var url = "https://www.peco-online.ro/index.php";
 
                     foreach (var fuelType in fuelTypes)
                     {
                         _logger.LogInformation("Procesez {FuelType} pentru {City}", fuelType, city);
-                        var formData = new Dictionary<string, string>
+                        
+                        // Folosim List<KeyValuePair> în loc de Dictionary pentru a permite chei duplicate
+                        var formData = new List<KeyValuePair<string, string>>
                         {
-                            { "carburant", fuelType },
-                            { "locatie", "Judet" },
-                            { "nume_locatie", city },
-                            { "Submit", "Cauta" },
-                            { "retea[]", "Petrom" }
+                            new KeyValuePair<string, string>("carburant", fuelType),
+                            new KeyValuePair<string, string>("locatie", "Judet"),
+                            new KeyValuePair<string, string>("nume_locatie", city),
+                            new KeyValuePair<string, string>("Submit", "Cauta")
                         };
 
+                        // Adăugăm toate rețelele de benzinării
+                        var networks = new[] { "Petrom", "OMV", "Rompetrol", "Lukoil", "Mol", "Socar", "Gazprom" };
+                        foreach (var network in networks)
+                        {
+                            formData.Add(new KeyValuePair<string, string>("retele[]", network));
+                        }
+
                         var content = new FormUrlEncodedContent(formData);
+                        
+                        // Adăugăm header pentru Content-Type
+                        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                        
                         var response = await client.PostAsync(url, content);
                         var html = await response.Content.ReadAsStringAsync();
+                        
+                        // Salvăm HTML-ul pentru debugging
+                        _logger.LogInformation("Răspuns HTML pentru {City} - {FuelType}: {Html}", city, fuelType, html);
 
                         // Parse HTML response to get price
                         var price = ParsePriceFromHtml(html);
@@ -84,19 +106,12 @@ namespace TravelThingBackend.Services
                                 Price = price,
                                 LastUpdated = DateTime.UtcNow.AddHours(3)
                             };
-
-                            var existingPrice = await _context.FuelPrices
-                                .FirstOrDefaultAsync(p => p.City == city && p.FuelType == fuelPrice.FuelType);
-
-                            if (existingPrice != null)
-                            {
-                                existingPrice.Price = price;
-                                existingPrice.LastUpdated = DateTime.UtcNow.AddHours(3);
-                            }
-                            else
-                            {
-                                _context.FuelPrices.Add(fuelPrice);
-                            }
+                            newPrices.Add(fuelPrice);
+                            successfulRequests++;
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Nu s-a putut obține prețul pentru {City} - {FuelType}", city, fuelType);
                         }
                     }
                 }
@@ -106,7 +121,26 @@ namespace TravelThingBackend.Services
                 }
             }
 
-            await _context.SaveChangesAsync();
+            // Actualizăm baza de date dacă am obținut cel puțin 50% din prețuri
+            if (successfulRequests >= totalRequests * 0.5 && newPrices.Any())
+            {
+                // Șterge toate prețurile vechi
+                _context.FuelPrices.RemoveRange(_context.FuelPrices);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Prețurile vechi au fost șterse");
+
+                // Adaugă prețurile noi
+                await _context.FuelPrices.AddRangeAsync(newPrices);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Prețurile noi au fost adăugate. {Successful}/{Total} prețuri actualizate cu succes.", 
+                    successfulRequests, totalRequests);
+            }
+            else
+            {
+                _logger.LogWarning("Nu s-au putut obține suficiente prețuri. {Successful}/{Total} prețuri actualizate cu succes.", 
+                    successfulRequests, totalRequests);
+                throw new Exception($"Nu s-au putut obține suficiente prețuri. {successfulRequests}/{totalRequests} prețuri actualizate cu succes.");
+            }
         }
 
         private decimal ParsePriceFromHtml(string html)
@@ -114,41 +148,39 @@ namespace TravelThingBackend.Services
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(html);
 
-            var rows = doc.DocumentNode.SelectNodes("//table//tr");
-            if (rows != null)
+            // Căutăm toate prețurile din rezultate
+            var priceNodes = doc.DocumentNode.SelectNodes("//h5[contains(@class, 'pret')]/strong");
+            if (priceNodes != null && priceNodes.Any())
             {
-                _logger.LogInformation("Am găsit {Count} rânduri în tabel", rows.Count);
-                foreach (var row in rows)
+                // Luăm cel mai mic preț (cel mai avantajos)
+                decimal minPrice = decimal.MaxValue;
+                foreach (var node in priceNodes)
                 {
-                    var cells = row.SelectNodes("td");
-                    if (cells != null && cells.Count >= 2)
+                    var priceText = node.InnerText.Trim();
+                    _logger.LogInformation("Text preț găsit: {PriceText}", priceText);
+                    
+                    if (decimal.TryParse(priceText.Replace(",", "."), out var price))
                     {
-                        var priceText = cells[0].InnerText.Trim();
-                        _logger.LogInformation("Text preț găsit: {PriceText}", priceText);
-                        if (decimal.TryParse(priceText.Replace(",", "."), out var price))
+                        _logger.LogInformation("Preț parsat: {Price}", price);
+                        if ((price > 3 && price < 15) || (price > 1 && price < 8 && priceText.Contains("GPL")))
                         {
-                            _logger.LogInformation("Preț parsat: {Price}", price);
-                            if ((price > 3 && price < 15) || (price > 1 && price < 8 && priceText.Contains("GPL")))
+                            if (price < minPrice)
                             {
-                                _logger.LogInformation("Preț valid găsit: {Price}", price);
-                                return price;
+                                minPrice = price;
                             }
-                            else
-                            {
-                                _logger.LogInformation("Preț în afara intervalului valid: {Price}", price);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogWarning("Nu s-a putut parsa prețul din text: {PriceText}", priceText);
                         }
                     }
                 }
+
+                if (minPrice != decimal.MaxValue)
+                {
+                    _logger.LogInformation("Cel mai mic preț găsit: {Price}", minPrice);
+                    return minPrice;
+                }
             }
-            else
-            {
-                _logger.LogWarning("Nu s-au găsit rânduri în tabel");
-            }
+            
+            _logger.LogWarning("Nu s-au găsit prețuri în rezultate");
+            _logger.LogInformation("HTML primit: {Html}", html);
             return 0;
         }
 
