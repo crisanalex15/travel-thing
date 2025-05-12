@@ -7,6 +7,20 @@ import AverageFuelPrices from "../components/AverageFuelPrices";
 import TravelMap from "../components/map/map";
 import Divider from "../components/Divider";
 
+// Importăm imaginile
+import cutleryIcon from "../components/Images/cutlery.png";
+import cafeIcon from "../components/Images/latte-art.png";
+import parkIcon from "../components/Images/park.png";
+import museumIcon from "../components/Images/museum.png";
+import theaterIcon from "../components/Images/theater.png";
+import shopIcon from "../components/Images/store.png";
+import churchIcon from "../components/Images/church.png";
+import architectureIcon from "../components/Images/architecture.png";
+import monumentIcon from "../components/Images/monument.png";
+import castleIcon from "../components/Images/castle.png";
+import lakeIcon from "../components/Images/lake.png";
+import beachIcon from "../components/Images/beach.png";
+
 export default function Home() {
   const [startLocation, setStartLocation] = useState("");
   const [endLocation, setEndLocation] = useState("");
@@ -21,6 +35,8 @@ export default function Home() {
   const [averagePrices, setAveragePrices] = useState({});
   const [fuelPrices, setFuelPrices] = useState({});
   const [isRoundTrip, setIsRoundTrip] = useState(false);
+  const [selectedAttraction, setSelectedAttraction] = useState(null);
+  const [radius, setRadius] = useState("");
 
   const fuelTypes = [
     "Motorina Premium",
@@ -209,6 +225,14 @@ export default function Home() {
     }
   };
 
+  const handleAttractionClick = (attraction) => {
+    if (selectedAttraction === attraction) {
+      setSelectedAttraction(null);
+    } else {
+      setSelectedAttraction(attraction);
+    }
+  };
+
   return (
     <div className="home-container">
       <h1 className="tt-title">Travel Thing (DEMO)</h1>
@@ -332,6 +356,182 @@ export default function Home() {
           />
         </div>
       )}
+      <Divider />
+      <div className="tt-attractions">
+        <h3>Cautare atracții turistice</h3>
+        <Input
+          type="number"
+          className="tt-attractions-form-input"
+          placeholder="Raza de cautare (km | ex 0.5)"
+          value={radius}
+          onChange={(e) => setRadius(e.target.value)}
+        />
+        <div className="tt-attractions-form">
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "restaurants"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("restaurants")}
+          >
+            <p>Restaurante</p>
+            <img src={cutleryIcon} alt="Restaurante" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "cafes"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("cafes")}
+          >
+            <p>Cafenele</p>
+            <img src={cafeIcon} alt="Cafenele" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "parks"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("parks")}
+          >
+            <p>Parcuri</p>
+            <img src={parkIcon} alt="Parcuri" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "museums"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("museums")}
+          >
+            <p>Muzee</p>
+            <img src={museumIcon} alt="Muzee" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "theaters"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("theaters")}
+          >
+            <p>Teatre și divertisment</p>
+            <img src={theaterIcon} alt="Teatre și divertisment" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "shops"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("shops")}
+          >
+            <p>Magazine</p>
+            <img src={shopIcon} alt="Magazine" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "churches"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("churches")}
+          >
+            <p>Biserici</p>
+            <img src={churchIcon} alt="Biserici" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "architecture"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("architecture")}
+          >
+            <p>Arhitectură</p>
+            <img src={architectureIcon} alt="Arhitectură" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "monuments"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("monuments")}
+          >
+            <p>Monumente</p>
+            <img src={monumentIcon} alt="Monumente" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "castles"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("castles")}
+          >
+            <p>Cetați</p>
+            <img src={castleIcon} alt="Cetați" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "lakes"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("lakes")}
+          >
+            <p>Lacuri</p>
+            <img src={lakeIcon} alt="Lacuri" />
+          </div>
+          <div
+            className={`tt-attractions-form-image ${
+              selectedAttraction === "beaches"
+                ? "selected"
+                : selectedAttraction
+                ? "disabled"
+                : ""
+            }`}
+            onClick={() => handleAttractionClick("beaches")}
+          >
+            <p>Plaje</p>
+            <img src={beachIcon} alt="Plaje" />
+          </div>
+        </div>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="tt-attractions-form-button"
+        >
+          {loading ? "Se calculează..." : "Calculează"}
+        </Button>
+      </div>
     </div>
   );
 }
