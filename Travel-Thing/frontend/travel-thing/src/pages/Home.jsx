@@ -53,6 +53,7 @@ export default function Home() {
   const [selectedAttraction, setSelectedAttraction] = useState(null);
   const [radius, setRadius] = useState("");
   const [showAttractions, setShowAttractions] = useState(false);
+  const [foundLocations, setFoundLocations] = useState([]);
 
   const fuelTypes = [
     "Motorina Premium",
@@ -266,7 +267,7 @@ export default function Home() {
 
       const data = await response.json();
       console.log("Atracții găsite:", data);
-      // Aici putem adăuga logica pentru afișarea rezultatelor
+      setFoundLocations(data);
     } catch (error) {
       console.error("Eroare detaliată:", error);
       setError(
@@ -305,310 +306,349 @@ export default function Home() {
   };
 
   return (
-    <div className="home-container">
-      <h1 className="tt-title">Travel Thing (DEMO)</h1>
-      <p className="tt-subtitle">
-        Calculator de călătorii și atracții turistice
-      </p>
-      {loading && <div className="tt-loading">Se încarcă prețurile...</div>}
-      {error && <div className="tt-error">{error}</div>}
-      <form className="tt-form" onSubmit={handleSubmit}>
-        <div className="tt-row">
-          <Input
-            type="text"
-            placeholder="Introdu punctul de plecare..."
-            value={startLocation}
-            onChange={(e) => setStartLocation(e.target.value)}
-            onBlur={(e) => setStartLocation(normalizeLocation(e.target.value))}
-          />
-          <Input
-            type="text"
-            placeholder="Introdu punctul de sosire..."
-            value={endLocation}
-            onChange={(e) => setEndLocation(e.target.value)}
-            onBlur={(e) => setEndLocation(normalizeLocation(e.target.value))}
-          />
-        </div>
-        <div className="tt-row">
-          <Input
-            type="number"
-            placeholder="Introdu consumul mediu (L/100km)"
-            value={consumption}
-            onChange={(e) => setConsumption(e.target.value)}
-          />
-          <select
-            className="tt-select"
-            value={fuelType}
-            onChange={(e) => setFuelType(e.target.value)}
-          >
-            {fuelTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
+    <>
+      <div className="home-container">
+        <h1 className="tt-title">Travel Thing (DEMO)</h1>
+        <p className="tt-subtitle">
+          Calculator de călătorii și atracții turistice
+        </p>
+        {loading && <div className="tt-loading">Se încarcă prețurile...</div>}
+        {error && <div className="tt-error">{error}</div>}
+        <form className="tt-form" onSubmit={handleSubmit}>
+          <div className="tt-row">
+            <Input
+              type="text"
+              placeholder="Introdu punctul de plecare..."
+              value={startLocation}
+              onChange={(e) => setStartLocation(e.target.value)}
+              onBlur={(e) =>
+                setStartLocation(normalizeLocation(e.target.value))
+              }
+            />
+            <Input
+              type="text"
+              placeholder="Introdu punctul de sosire..."
+              value={endLocation}
+              onChange={(e) => setEndLocation(e.target.value)}
+              onBlur={(e) => setEndLocation(normalizeLocation(e.target.value))}
+            />
+          </div>
+          <div className="tt-row">
+            <Input
+              type="number"
+              placeholder="Introdu consumul mediu (L/100km)"
+              value={consumption}
+              onChange={(e) => setConsumption(e.target.value)}
+            />
+            <select
+              className="tt-select"
+              value={fuelType}
+              onChange={(e) => setFuelType(e.target.value)}
+            >
+              {fuelTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="tt-route-preferences">
+            {routePreferences.map((pref) => (
+              <button
+                key={pref.value}
+                type="button"
+                className={`tt-route-btn ${
+                  routePreference === pref.value ? "active" : ""
+                }`}
+                onClick={() => handleRoutePreferenceChange(pref.value)}
+              >
+                <span className="tt-route-icon">{pref.icon}</span>
+                {pref.label}
+              </button>
             ))}
-          </select>
-        </div>
-        <div className="tt-route-preferences">
-          {routePreferences.map((pref) => (
-            <button
-              key={pref.value}
-              type="button"
-              className={`tt-route-btn ${
-                routePreference === pref.value ? "active" : ""
-              }`}
-              onClick={() => handleRoutePreferenceChange(pref.value)}
-            >
-              <span className="tt-route-icon">{pref.icon}</span>
-              {pref.label}
-            </button>
-          ))}
-        </div>
-        <div className="tt-form-group">
-          <Button type="button" onClick={() => setManualPrice(!manualPrice)}>
-            {manualPrice ? "Preț manual" : "Preț automat"}
-          </Button>
-          {manualPrice ? (
-            <Input
-              type="number"
-              placeholder="Introdu prețul carburantului (RON/L)"
-              value={fuelPrice}
-              onChange={(e) => setFuelPrice(e.target.value)}
-            />
-          ) : (
-            <div className="tt-auto-price">
-              Preț automat pentru {fuelType}:{" "}
-              {fuelPrices[fuelType] || "Se încarcă..."} RON/L
-            </div>
-          )}
-          <div className="tt-form-group-checkbox">
-            <p>Include dus-întors</p>
-            <input
-              type="checkbox"
-              checked={isRoundTrip}
-              onChange={(e) => setIsRoundTrip(e.target.checked)}
-            />
           </div>
-        </div>
-
-        <Button type="submit" disabled={loading}>
-          {loading ? "Se calculează..." : "Calculează"}
-        </Button>
-      </form>
-
-      {routeResult && (
-        <div className="tt-result">
-          <h3>Rezultate ruta:</h3>
-          <div className="tt-result-details">
-            <p>
-              Distanță:{" "}
-              {routeResult.distance.kilometers * (isRoundTrip ? 2 : 1)} km
-            </p>
-            <p>
-              Durată:{" "}
-              {formatDuration(
-                routeResult.duration.hours * (isRoundTrip ? 2 : 1),
-                routeResult.duration.minutes * (isRoundTrip ? 2 : 1)
-              )}
-            </p>
-            {consumptionResult.error ? (
-              <p className="tt-warning">{consumptionResult.error}</p>
-            ) : (
-              <>
-                <p>Consum carburant: {consumptionResult.fuelNeeded} L</p>
-                <p>Cost carburant: {consumptionResult.totalCost} RON</p>
-              </>
-            )}
-          </div>
-          <Divider />
-          <TravelMap
-            geometry={routeResult.geometry}
-            startLocation={startLocation}
-            endLocation={endLocation}
-          />
-        </div>
-      )}
-
-      {showAttractions && (
-        <>
-          <Divider />
-          <div className="tt-attractions">
-            <h3>Cautare atracții turistice</h3>
-            <Input
-              type="number"
-              className="tt-attractions-form-input"
-              placeholder="Raza de cautare (km | ex 0.5)"
-              value={radius}
-              onChange={(e) => setRadius(e.target.value)}
-            />
-            <div className="tt-attractions-form">
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "restaurants"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("restaurants")}
-              >
-                <p>Restaurante</p>
-                <img src={cutleryIcon} alt="Restaurante" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "cafes"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("cafes")}
-              >
-                <p>Cafenele</p>
-                <img src={cafeIcon} alt="Cafenele" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "parks"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("parks")}
-              >
-                <p>Parcuri</p>
-                <img src={parkIcon} alt="Parcuri" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "museums"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("museums")}
-              >
-                <p>Muzee</p>
-                <img src={museumIcon} alt="Muzee" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "theaters"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("theaters")}
-              >
-                <p>Teatre și divertisment</p>
-                <img src={theaterIcon} alt="Teatre și divertisment" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "shops"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("shops")}
-              >
-                <p>Magazine</p>
-                <img src={shopIcon} alt="Magazine" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "churches"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("churches")}
-              >
-                <p>Biserici</p>
-                <img src={churchIcon} alt="Biserici" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "architecture"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("architecture")}
-              >
-                <p>Arhitectură</p>
-                <img src={architectureIcon} alt="Arhitectură" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "monuments"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("monuments")}
-              >
-                <p>Monumente</p>
-                <img src={monumentIcon} alt="Monumente" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "castles"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("castles")}
-              >
-                <p>Cetați</p>
-                <img src={castleIcon} alt="Cetați" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "lakes"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("lakes")}
-              >
-                <p>Lacuri</p>
-                <img src={lakeIcon} alt="Lacuri" />
-              </div>
-              <div
-                className={`tt-attractions-form-image ${
-                  selectedAttraction === "beaches"
-                    ? "selected"
-                    : selectedAttraction
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => handleAttractionClick("beaches")}
-              >
-                <p>Plaje</p>
-                <img src={beachIcon} alt="Plaje" />
-              </div>
-            </div>
-            <Button
-              type="button"
-              disabled={loading}
-              className="tt-attractions-form-button"
-              onClick={handleSearchAttractions}
-            >
-              {loading ? "Se caută..." : "Caută"}
+          <div className="tt-form-group">
+            <Button type="button" onClick={() => setManualPrice(!manualPrice)}>
+              {manualPrice ? "Preț manual" : "Preț automat"}
             </Button>
+            {manualPrice ? (
+              <Input
+                type="number"
+                placeholder="Introdu prețul carburantului (RON/L)"
+                value={fuelPrice}
+                onChange={(e) => setFuelPrice(e.target.value)}
+              />
+            ) : (
+              <div className="tt-auto-price">
+                Preț automat pentru {fuelType}:{" "}
+                {fuelPrices[fuelType] || "Se încarcă..."} RON/L
+              </div>
+            )}
+            <div className="tt-form-group-checkbox">
+              <p>Include dus-întors</p>
+              <input
+                type="checkbox"
+                checked={isRoundTrip}
+                onChange={(e) => setIsRoundTrip(e.target.checked)}
+              />
+            </div>
           </div>
-        </>
+
+          <Button type="submit" disabled={loading}>
+            {loading ? "Se calculează..." : "Calculează"}
+          </Button>
+        </form>
+
+        {routeResult && (
+          <div className="tt-result">
+            <h3>Rezultate ruta:</h3>
+            <div className="tt-result-details">
+              <p>
+                Distanță:{" "}
+                {routeResult.distance.kilometers * (isRoundTrip ? 2 : 1)} km
+              </p>
+              <p>
+                Durată:{" "}
+                {formatDuration(
+                  routeResult.duration.hours * (isRoundTrip ? 2 : 1),
+                  routeResult.duration.minutes * (isRoundTrip ? 2 : 1)
+                )}
+              </p>
+              {consumptionResult.error ? (
+                <p className="tt-warning">{consumptionResult.error}</p>
+              ) : (
+                <>
+                  <p>Consum carburant: {consumptionResult.fuelNeeded} L</p>
+                  <p>Cost carburant: {consumptionResult.totalCost} RON</p>
+                </>
+              )}
+            </div>
+            <Divider />
+            <TravelMap
+              geometry={routeResult.geometry}
+              startLocation={startLocation}
+              endLocation={endLocation}
+            />
+          </div>
+        )}
+
+        {showAttractions && (
+          <>
+            <Divider />
+            <div className="tt-attractions">
+              <h3>Cautare atracții turistice</h3>
+              <Input
+                type="number"
+                className="tt-attractions-form-input"
+                placeholder="Raza de cautare (km | ex 0.5)"
+                value={radius}
+                onChange={(e) => setRadius(e.target.value)}
+              />
+              <div className="tt-attractions-form">
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "restaurants"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("restaurants")}
+                >
+                  <p>Restaurante</p>
+                  <img src={cutleryIcon} alt="Restaurante" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "cafes"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("cafes")}
+                >
+                  <p>Cafenele</p>
+                  <img src={cafeIcon} alt="Cafenele" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "parks"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("parks")}
+                >
+                  <p>Parcuri</p>
+                  <img src={parkIcon} alt="Parcuri" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "museums"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("museums")}
+                >
+                  <p>Muzee</p>
+                  <img src={museumIcon} alt="Muzee" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "theaters"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("theaters")}
+                >
+                  <p>Teatre și divertisment</p>
+                  <img src={theaterIcon} alt="Teatre și divertisment" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "shops"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("shops")}
+                >
+                  <p>Magazine</p>
+                  <img src={shopIcon} alt="Magazine" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "churches"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("churches")}
+                >
+                  <p>Biserici</p>
+                  <img src={churchIcon} alt="Biserici" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "architecture"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("architecture")}
+                >
+                  <p>Arhitectură</p>
+                  <img src={architectureIcon} alt="Arhitectură" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "monuments"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("monuments")}
+                >
+                  <p>Monumente</p>
+                  <img src={monumentIcon} alt="Monumente" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "castles"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("castles")}
+                >
+                  <p>Cetați</p>
+                  <img src={castleIcon} alt="Cetați" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "lakes"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("lakes")}
+                >
+                  <p>Lacuri</p>
+                  <img src={lakeIcon} alt="Lacuri" />
+                </div>
+                <div
+                  className={`tt-attractions-form-image ${
+                    selectedAttraction === "beaches"
+                      ? "selected"
+                      : selectedAttraction
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => handleAttractionClick("beaches")}
+                >
+                  <p>Plaje</p>
+                  <img src={beachIcon} alt="Plaje" />
+                </div>
+              </div>
+              <Button
+                type="button"
+                disabled={loading}
+                className="tt-attractions-form-button"
+                onClick={handleSearchAttractions}
+              >
+                {loading ? "Se caută..." : "Caută"}
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+
+      {foundLocations.length > 0 && (
+        <div className="locations-container">
+          <h2>Locații găsite</h2>
+          <div className="locations-grid">
+            {foundLocations.map((location, index) => (
+              <div key={index} className="location-card">
+                <h3>{location.name}</h3>
+                <p className="location-description">
+                  {location.description ||
+                    "Momentan nu avem informații despre această locație."}
+                </p>
+                <p className="location-distance">
+                  Distanță:{" "}
+                  {location.distance
+                    ? location.distance < 1000
+                      ? `${Math.round(location.distance)} metri`
+                      : `${(location.distance / 1000).toFixed(2)} km`
+                    : "Necunoscută"}
+                </p>
+                {location.mapsUrl && (
+                  <a
+                    href={location.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="location-link"
+                  >
+                    Vezi pe Google Maps
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 }

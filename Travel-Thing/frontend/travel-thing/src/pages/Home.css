@@ -351,3 +351,68 @@ body {
 .tt-attractions-form-button:hover {
   background-color: #388e3c;
 }
+
+.locations-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.locations-container h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.locations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.location-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.location-card:hover {
+  transform: translateY(-5px);
+}
+
+.location-card h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.location-description {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.location-distance {
+  color: #2c3e50;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.location-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.location-link:hover {
+  background-color: #2980b9;
+}
