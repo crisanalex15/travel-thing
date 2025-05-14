@@ -240,7 +240,10 @@ public class TouristAttractionsController : ControllerBase
 
                     // Încercăm să obținem imaginea din Google Places
                     string image = await GetGooglePlaceImage(name, latDetail, lonDetail);
-
+                    if(name == "" || name == null)
+                    {
+                        continue;
+                    }
                     results.Add(new
                     {
                         Name = name,

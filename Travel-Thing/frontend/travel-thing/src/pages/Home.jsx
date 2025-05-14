@@ -33,7 +33,7 @@ const attractionTypeMap = {
   monuments: "monuments_and_memorials",
   castles: "castles",
   lakes: "lakes",
-  beaches: "beaches",
+  beaches: "interesting_places",
 };
 
 export default function Home() {
@@ -54,6 +54,8 @@ export default function Home() {
   const [radius, setRadius] = useState("");
   const [showAttractions, setShowAttractions] = useState(false);
   const [foundLocations, setFoundLocations] = useState([]);
+  const [numberOfPeople, setNumberOfPeople] = useState(1);
+  const [showSplitCost, setShowSplitCost] = useState(false);
 
   const fuelTypes = [
     "Motorina Premium",
@@ -380,8 +382,13 @@ export default function Home() {
               />
             ) : (
               <div className="tt-auto-price">
-                Preț automat pentru {fuelType}:{" "}
-                {fuelPrices[fuelType] || "Se încarcă..."} RON/L
+                <span className="desktop-price">
+                  Preț automat pentru {fuelType}:{" "}
+                  {fuelPrices[fuelType] || "Se încarcă..."} RON/L
+                </span>
+                <span className="mobile-price">
+                  Preț automat: {fuelPrices[fuelType] || "..."} RON/L
+                </span>
               </div>
             )}
             <div className="tt-form-group-checkbox">
@@ -419,7 +426,46 @@ export default function Home() {
               ) : (
                 <>
                   <p>Consum carburant: {consumptionResult.fuelNeeded} L</p>
-                  <p>Cost carburant: {consumptionResult.totalCost} RON</p>
+                  <p>Cost carburant total: {consumptionResult.totalCost} RON</p>
+                  <div className="tt-split-option">
+                    <label className="tt-checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={showSplitCost}
+                        onChange={(e) => setShowSplitCost(e.target.checked)}
+                      />
+                      Împarte costul cu prietenii
+                    </label>
+                  </div>
+                  {showSplitCost && (
+                    <div className="tt-split-cost">
+                      <div className="tt-split-input">
+                        <label htmlFor="numberOfPeople">
+                          Împarte costul între:
+                        </label>
+                        <input
+                          type="number"
+                          id="numberOfPeople"
+                          min="1"
+                          value={numberOfPeople}
+                          onChange={(e) =>
+                            setNumberOfPeople(
+                              Math.max(1, parseInt(e.target.value) || 1)
+                            )
+                          }
+                          className="tt-number-input"
+                        />
+                        <span>persoane</span>
+                      </div>
+                      <p className="tt-split-result">
+                        Cost per persoană:{" "}
+                        {(consumptionResult.totalCost / numberOfPeople).toFixed(
+                          2
+                        )}{" "}
+                        RON
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -598,8 +644,8 @@ export default function Home() {
                   }`}
                   onClick={() => handleAttractionClick("beaches")}
                 >
-                  <p>Plaje</p>
-                  <img src={beachIcon} alt="Plaje" />
+                  <p>Alte atracții</p>
+                  <img src={beachIcon} alt="Alte atracții" />
                 </div>
               </div>
               <Button
@@ -613,42 +659,42 @@ export default function Home() {
             </div>
           </>
         )}
-      </div>
 
-      {foundLocations.length > 0 && (
-        <div className="locations-container">
-          <h2>Locații găsite</h2>
-          <div className="locations-grid">
-            {foundLocations.map((location, index) => (
-              <div key={index} className="location-card">
-                <h3>{location.name}</h3>
-                <p className="location-description">
-                  {location.description ||
-                    "Momentan nu avem informații despre această locație."}
-                </p>
-                <p className="location-distance">
-                  Distanță:{" "}
-                  {location.distance
-                    ? location.distance < 1000
-                      ? `${Math.round(location.distance)} metri`
-                      : `${(location.distance / 1000).toFixed(2)} km`
-                    : "Necunoscută"}
-                </p>
-                {location.mapsUrl && (
-                  <a
-                    href={location.mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="location-link"
-                  >
-                    Vezi pe Google Maps
-                  </a>
-                )}
-              </div>
-            ))}
+        {foundLocations.length > 0 && (
+          <div className="locations-container">
+            <h2>Locații găsite</h2>
+            <div className="locations-grid">
+              {foundLocations.map((location, index) => (
+                <div key={index} className="location-card">
+                  <h3>{location.name}</h3>
+                  <p className="location-description">
+                    {location.description ||
+                      "Momentan nu avem informații despre această locație."}
+                  </p>
+                  <p className="location-distance">
+                    Distanță:{" "}
+                    {location.distance
+                      ? location.distance < 1000
+                        ? `${Math.round(location.distance * 1000)} metri`
+                        : `${(location.distance / 1000).toFixed(2)} km`
+                      : "Necunoscută"}
+                  </p>
+                  {location.mapsUrl && (
+                    <a
+                      href={location.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="location-link"
+                    >
+                      Vezi pe Google Maps
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }
