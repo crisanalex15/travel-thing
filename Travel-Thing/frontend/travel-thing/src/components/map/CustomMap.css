@@ -1,10 +1,10 @@
 .map-wrapper {
   height: 100%; /* dacă părintele are înălțime */
-  min-height: 400px; /* sau ceva fix */
+  min-height: 700px; /* sau ceva fix */
 }
 
 .custom-map {
-  height: 400px !important; /* FOARTE important */
+  height: 700px !important; /* FOARTE important */
   width: 100%;
   border: 1px solid #4caf50;
 }

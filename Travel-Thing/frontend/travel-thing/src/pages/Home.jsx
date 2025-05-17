@@ -21,19 +21,78 @@ import castleIcon from "../components/Images/castle.png";
 import lakeIcon from "../components/Images/lake.png";
 import beachIcon from "../components/Images/beach.png";
 
-const attractionTypeMap = {
-  restaurants: "foods",
-  cafes: "cafes",
-  parks: "parks",
-  museums: "museums",
+/*const attractionTypeMap = {
+  restaurants: "foods,restaurants,fast_food,cuisine,food",
+  cafes: "cafes,coffee,tea",
+  parks: "parks,gardens,nature_reserves,natural_parks,national_parks",
+  museums: "museums,art_galleries,art,history",
   theaters: "theatres_and_entertainments",
-  shops: "shops",
-  churches: "churches",
-  architecture: "architecture",
-  monuments: "monuments_and_memorials",
-  castles: "castles",
-  lakes: "lakes",
+  shops: "shops,shopping_malls,markets,supermarkets",
+  churches:
+    "churches,religion,cathedrals,eastern_orthodox_churches,other_churches",
+  architecture: "monuments_and_memorials,monuments,memorials",
+  monuments: "monuments_and_memorials,monuments,memorials",
+  castles: "castles,forts,castles_and_forts",
+  lakes: "hotels,hostels,motels,camping,guest_houses,chalets,accommodations",
   beaches: "interesting_places",
+};
+ */
+
+const attractionTypeMap = {
+  // Cazări
+  lakes:
+    "hotels,hostels,motels,camping,guest_houses,chalets,accommodations,apartments,bed_and_breakfasts,resorts,villas",
+
+  // Restaurante și cafenele
+  restaurants:
+    "foods,restaurants,fast_food,cuisine,food,eating_and_drinking,restaurants,fast_food,cuisine,food,local_food,street_food",
+  cafes: "cafes,coffee,tea,bars,pubs,nightclubs,drinking_water",
+
+  // Parcuri și natură
+  parks:
+    "parks,gardens,nature_reserves,natural_parks,national_parks,beaches,forests,lakes,rivers,waterfalls,mountains,viewpoints,lookouts",
+
+  // Cultură și artă
+  museums:
+    "museums,art_galleries,art,history,cultural_centers,exhibitions,historic_sites,archaeological_sites,ruins,monuments,memorials",
+  theaters:
+    "theatres_and_entertainments,cinemas,concert_halls,music_venues,stadiums,sports_venues",
+
+  // Shopping și servicii
+  shops:
+    "shops,shopping_malls,markets,supermarkets,convenience_stores,department_stores,outlet_malls,local_shops,craft_shops,souvenir_shops",
+
+  // Religie și arhitectură
+  churches:
+    "churches,religion,cathedrals,eastern_orthodox_churches,other_churches,temples,mosques,synagogues,monasteries,religious_sites",
+  architecture:
+    "monuments_and_memorials,monuments,memorials,architecture,historic_architecture,modern_architecture,landmarks",
+  monuments:
+    "monuments_and_memorials,monuments,memorials,historic_sites,archaeological_sites,ruins",
+
+  // Castele și fortificații
+  castles:
+    "castles,forts,castles_and_forts,fortifications,defensive_walls,towers,watchtowers",
+
+  // Transport și infrastructură
+  beaches:
+    "interesting_places,transportation,airports,railway_stations,bus_stations,ports,ferry_terminals,taxi_stands,car_rentals,bicycle_rentals,public_transport,subway_stations,tram_stops",
+
+  // Divertisment și activități
+  entertainment:
+    "entertainment,amusement_parks,water_parks,zoos,aquariums,botanical_gardens,theme_parks,adventure_parks,playgrounds,recreation_areas",
+
+  // Sănătate și wellness
+  wellness:
+    "health,pharmacies,hospitals,clinics,spas,wellness_centers,fitness_centers,yoga_centers",
+
+  // Educație și știință
+  education:
+    "education,schools,universities,libraries,research_centers,science_centers,planetariums,observatories",
+
+  // Servicii și utilități
+  services:
+    "services,banks,post_offices,police_stations,fire_stations,gas_stations,car_washes,repair_shops,laundry_services",
 };
 
 export default function Home() {
@@ -484,6 +543,9 @@ export default function Home() {
             <div className="tt-attractions">
               <h3>Cautare atracții turistice</h3>
               <Input
+                min="0.1"
+                max="10"
+                step="0.1"
                 type="number"
                 className="tt-attractions-form-input"
                 placeholder="Raza de cautare (km | ex 0.5)"
@@ -631,8 +693,8 @@ export default function Home() {
                   }`}
                   onClick={() => handleAttractionClick("lakes")}
                 >
-                  <p>Lacuri</p>
-                  <img src={lakeIcon} alt="Lacuri" />
+                  <p>Cazări</p>
+                  <img src={lakeIcon} alt="Cazări" />
                 </div>
                 <div
                   className={`tt-attractions-form-image ${
@@ -644,8 +706,8 @@ export default function Home() {
                   }`}
                   onClick={() => handleAttractionClick("beaches")}
                 >
-                  <p>Alte atracții</p>
-                  <img src={beachIcon} alt="Alte atracții" />
+                  <p>Alte locații</p>
+                  <img src={beachIcon} alt="Alte locații" />
                 </div>
               </div>
               <Button

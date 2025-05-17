@@ -73,7 +73,7 @@ export default function TravelMap({ geometry, startLocation, endLocation }) {
       zoom={zoom}
       scrollWheelZoom={true}
       style={{
-        height: "400px",
+        height: "700px",
         width: "100%",
         border: "3px solid #4caf50",
         borderRadius: "16px",
